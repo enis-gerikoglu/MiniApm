@@ -1,0 +1,39 @@
+@{
+ViewData["Title"] = "Dashboard";
+}
+
+<h1>Mini APM Dashboard</h1>
+
+<div>
+    <p>Machine: <span id="machine"></span></p>
+    <p>CPU: <span id="cpu"></span></p>
+    <p>Memory: <span id="memory"></span></p>
+    <p>Disk: <span id="disk"></span></p>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Senin script -->
+<script>
+    $(document).ready(function () {
+        loadData();
+        setInterval(loadData, 5000);
+    });
+
+    function loadData() {
+        $.ajax({
+            url: "http://localhost:5099/api/metrics/last",
+            method: "GET",
+            success: function (data) {
+                $("#machine").text(data.machineName);
+                $("#cpu").text("%" + data.cpuUsage);
+                $("#memory").text("%" + data.memoryUsage);
+                $("#disk").text("%" + data.diskUsage);
+            },
+            error: function (err) {
+                console.error("API error:", err);
+            }
+        });
+    }
+</script>

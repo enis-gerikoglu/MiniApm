@@ -1,0 +1,17 @@
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/bin/Debug/net8.0/MiniApm.Infrastructure.deps.json
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/bin/Debug/net8.0/MiniApm.Infrastructure.runtimeconfig.json
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/bin/Debug/net8.0/MiniApm.Infrastructure.dll
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/bin/Debug/net8.0/MiniApm.Infrastructure.pdb
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/bin/Debug/net8.0/MiniApm.Domain.dll
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/bin/Debug/net8.0/MiniApm.Domain.pdb
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.csproj.AssemblyReference.cache
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.AssemblyInfoInputs.cache
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.AssemblyInfo.cs
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.csproj.CoreCompileInputs.cache
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm..1739C2DC.Up2Date
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.dll
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/refint/MiniApm.Infrastructure.dll
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.pdb
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/MiniApm.Infrastructure.genruntimeconfig.cache
+/Users/enis/RiderProjects/MiniApm/MiniApm.Infrastructure/obj/Debug/net8.0/ref/MiniApm.Infrastructure.dll

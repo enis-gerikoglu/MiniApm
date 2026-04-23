@@ -1,0 +1,6 @@
+@MiniApm.Api_HostAddress = http://localhost:5099
+
+GET {{MiniApm.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

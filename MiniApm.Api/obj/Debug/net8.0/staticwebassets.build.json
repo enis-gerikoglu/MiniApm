@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "ngAUR3St6Vhzw1xo321kA4QPDjEDPwFQf8A+wqERil4=",
+  "Source": "MiniApm.Api",
+  "BasePath": "_content/MiniApm.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

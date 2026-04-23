@@ -1,0 +1,11 @@
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/bin/Debug/net8.0/MiniApm.Domain.deps.json
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/bin/Debug/net8.0/MiniApm.Domain.dll
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/bin/Debug/net8.0/MiniApm.Domain.pdb
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/MiniApm.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/MiniApm.Domain.AssemblyInfoInputs.cache
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/MiniApm.Domain.AssemblyInfo.cs
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/MiniApm.Domain.csproj.CoreCompileInputs.cache
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/MiniApm.Domain.dll
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/refint/MiniApm.Domain.dll
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/MiniApm.Domain.pdb
+/Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/ref/MiniApm.Domain.dll
