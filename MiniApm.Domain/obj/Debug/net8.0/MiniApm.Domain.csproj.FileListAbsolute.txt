@@ -9,3 +9,15 @@
 /Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/refint/MiniApm.Domain.dll
 /Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/MiniApm.Domain.pdb
 /Users/enis/RiderProjects/MiniApm/MiniApm.Domain/obj/Debug/net8.0/ref/MiniApm.Domain.dll
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\bin\Debug\net8.0\MiniApm.Domain.deps.json
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\bin\Debug\net8.0\MiniApm.Domain.dll
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\bin\Debug\net8.0\MiniApm.Domain.pdb
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\MiniApm.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\MiniApm.Domain.AssemblyInfoInputs.cache
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\MiniApm.Domain.AssemblyInfo.cs
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\MiniApm.Domain.csproj.CoreCompileInputs.cache
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\MiniApm.Domain.sourcelink.json
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\MiniApm.Domain.dll
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\refint\MiniApm.Domain.dll
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\MiniApm.Domain.pdb
+C:\Users\pc\Source\Repos\MiniApm\MiniApm.Domain\obj\Debug\net8.0\ref\MiniApm.Domain.dll

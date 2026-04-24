@@ -1,49 +1,548 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - MiniApm.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/MiniApm.Web.styles.css" asp-append-version="true"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> @ViewData["Title"] - MiniAPM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MiniApm.Web.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --bg-base:       #080c10;
+            --bg-surface:    #0d1219;
+            --bg-panel:      #111820;
+            --bg-hover:      #161f2a;
+            --border:        #1e2d3d;
+            --border-bright: #2a3f55;
+            --accent:        #00d4ff;
+            --accent-glow:   rgba(0, 212, 255, 0.15);
+            --accent-dim:    #0099bb;
+            --green:         #00e5a0;
+            --red:           #ff4d6a;
+            --yellow:        #ffc947;
+            --text-primary:  #e8f1fa;
+            --text-secondary:#7a93ab;
+            --text-dim:      #3d5268;
+            --mono:          'JetBrains Mono', monospace;
+            --sans:          'Syne', sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grid texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.18;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* === SIDEBAR === */
+        .apm-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100vh;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .logo-icon svg { width: 18px; height: 18px; color: #000; }
+
+        .logo-text {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text span {
+            color: var(--accent);
+        }
+
+        .sidebar-status {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .sidebar-section-label {
+            padding: 20px 20px 8px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+        .nav-item-apm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            border-left: 2px solid transparent;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .nav-item-apm:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+            border-left-color: var(--border-bright);
+        }
+
+        .nav-item-apm.active {
+            color: var(--accent);
+            background: var(--accent-glow);
+            border-left-color: var(--accent);
+        }
+
+        .nav-item-apm svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        .nav-item-apm:hover svg,
+        .nav-item-apm.active svg { opacity: 1; }
+
+        .nav-badge {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+            background: var(--bg-panel);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+
+        .nav-item-apm.active .nav-badge {
+            background: var(--accent-glow);
+            color: var(--accent);
+            border-color: var(--accent-dim);
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .sidebar-footer span { color: var(--text-secondary); }
+
+        /* === TOPBAR === */
+        .apm-topbar {
+            position: fixed;
+            top: 0;
+            left: 220px;
+            right: 0;
+            height: 56px;
+            background: rgba(8, 12, 16, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            gap: 16px;
+            z-index: 90;
+        }
+
+        .topbar-breadcrumb {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .topbar-breadcrumb .sep { color: var(--text-dim); }
+        .topbar-breadcrumb .current { color: var(--text-primary); font-weight: 600; }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-apm {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            border: none;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-apm-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-apm-ghost:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--border-bright);
+        }
+
+        .btn-apm-primary {
+            background: var(--accent);
+            color: #000;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .btn-apm-primary:hover {
+            background: #33ddff;
+            box-shadow: 0 0 24px rgba(0, 212, 255, 0.3);
+        }
+
+        .time-range-pill {
+            display: flex;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .time-range-pill button {
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .time-range-pill button:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .time-range-pill button.active { background: var(--accent-glow); color: var(--accent); }
+
+        /* === MAIN CONTENT === */
+        .apm-main {
+            margin-left: 220px;
+            padding-top: 56px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .apm-content {
+            padding: 28px;
+        }
+
+        /* === FOOTER === */
+        .apm-footer {
+            margin-left: 220px;
+            border-top: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            background: var(--bg-surface);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .footer-links a:hover { color: var(--accent); }
+        .footer-divider { margin: 0 10px; }
+
+        /* === RESPONSIVE === */
+        @@media (max-width: 768px) {
+            .apm-sidebar { width: 60px; }
+            .logo-text, .sidebar-section-label, .nav-item-apm span, .sidebar-status span, .sidebar-footer { display: none; }
+            .nav-item-apm { padding: 10px; justify-content: center; }
+            .nav-item-apm svg { width: 18px; height: 18px; }
+            .nav-badge { display: none; }
+            .apm-topbar, .apm-main, .apm-footer { margin-left: 60px; left: 60px; }
+            .sidebar-logo { padding: 18px 14px; justify-content: center; }
+        }
+
+        /* Scrollbar global */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-surface); }
+        ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+    </style>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MiniApm.Web</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2026 - MiniApm.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- ── SIDEBAR ── -->
+    <aside class="apm-sidebar">
+        <a class="sidebar-logo" asp-area="" asp-controller="Home" asp-action="Index">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+            </div>
+            <span class="logo-text">Mini<span>APM</span></span>
+        </a>
+
+        <div class="sidebar-status">
+            <div class="status-dot"></div>
+            <span>All systems operational</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-label">Monitor</div>
+
+            <a class="nav-item-apm active" asp-area="" asp-controller="Home" asp-action="Index">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                </svg>
+                <span>Overview</span>
+            </a>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                <span>Transactions</span>
+                <span class="nav-badge">1.2k</span>
+            </a>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>Errors</span>
+                <span class="nav-badge">14</span>
+            </a>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18" />
+                </svg>
+                <span>Traces</span>
+            </a>
+
+            <div class="sidebar-section-label">Infrastructure</div>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                    <path d="M8 21h8M12 17v4" />
+                </svg>
+                <span>Services</span>
+            </a>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3" />
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                </svg>
+                <span>Databases</span>
+            </a>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 20V10M12 20V4M6 20v-6" />
+                </svg>
+                <span>Metrics</span>
+            </a>
+
+            <div class="sidebar-section-label">System</div>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                    <line x1="6" y1="1" x2="6" y2="4" />
+                    <line x1="10" y1="1" x2="10" y2="4" />
+                    <line x1="14" y1="1" x2="14" y2="4" />
+                </svg>
+                <span>Logs</span>
+            </a>
+
+            <a class="nav-item-apm" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                </svg>
+                <span>Alerts</span>
+                <span class="nav-badge">3</span>
+            </a>
+
+            <a class="nav-item-apm" asp-area="" asp-controller="Home" asp-action="Privacy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Privacy</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            v0.1.0 &nbsp;·&nbsp; <span>@DateTime.Now.ToString("HH:mm")</span>
+        </div>
+    </aside>
+
+    <!-- ── TOPBAR ── -->
+    <header class="apm-topbar">
+        <div class="topbar-breadcrumb">
+            <span>MiniAPM</span>
+            <span class="sep">/</span>
+            <span class="current">@(ViewData["Title"] ?? "Overview")</span>
+        </div>
+
+        <div class="topbar-actions">
+            <div class="time-range-pill">
+                <button>15m</button>
+                <button>1h</button>
+                <button class="active">24h</button>
+                <button>7d</button>
+            </div>
+            <button class="btn-apm btn-apm-ghost">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="1 4 1 10 7 10" />
+                    <path d="M3.51 15a9 9 0 1 0 .49-3.6" />
+                </svg>
+                Refresh
+            </button>
+            <button class="btn-apm btn-apm-primary">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                New Alert
+            </button>
+        </div>
+    </header>
+
+    <!-- ── MAIN ── -->
+    <div class="apm-main">
+        <div class="apm-content">
+            @RenderBody()
+        </div>
     </div>
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+
+    <!-- ── FOOTER ── -->
+    <footer class="apm-footer">
+        <span>&copy; 2026 MiniAPM — Application Performance Monitor</span>
+        <div class="footer-links">
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span class="footer-divider">·</span>
+            <a href="#">Docs</a>
+            <span class="footer-divider">·</span>
+            <a href="#">API</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Highlight active nav item based on current path
+        document.querySelectorAll('.nav-item-apm').forEach(link => {
+            if (link.href === window.location.href) {
+                document.querySelectorAll('.nav-item-apm').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

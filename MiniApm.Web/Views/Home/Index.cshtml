@@ -1,8 +1,742 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    :root {
+        --accent: #00d4ff;
+        --accent-glow: rgba(0, 212, 255, 0.12);
+        --accent-dim: #0099bb;
+        --green: #00e5a0;
+        --red: #ff4d6a;
+        --yellow: #ffc947;
+        --purple: #a78bfa;
+        --bg-surface: #0d1219;
+        --bg-panel: #111820;
+        --bg-hover: #161f2a;
+        --border: #1e2d3d;
+        --border-bright: #2a3f55;
+        --tp: #e8f1fa;
+        --ts: #7a93ab;
+        --td: #3d5268;
+        --mono: 'JetBrains Mono', monospace;
+        --sans: 'Syne', sans-serif;
+    }
+
+    .dash-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .dash-title {
+        font-family: var(--sans);
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--tp);
+        letter-spacing: -0.3px;
+    }
+
+        .dash-title span {
+            color: var(--accent);
+        }
+
+    .machine-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--ts);
+    }
+
+        .machine-pill svg {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+        }
+
+        .machine-pill strong {
+            color: var(--tp);
+            font-weight: 600;
+        }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .kpi-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: border-color .2s;
+    }
+
+        .kpi-card:hover {
+            border-color: var(--border-bright);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .kpi-card.cpu::before {
+            background: var(--accent);
+        }
+
+        .kpi-card.mem::before {
+            background: var(--purple);
+        }
+
+        .kpi-card.disk::before {
+            background: var(--yellow);
+        }
+
+    .kpi-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .kpi-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--ts);
+    }
+
+    .kpi-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+        .kpi-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .kpi-icon.cpu {
+            background: rgba(0,212,255,.1);
+            color: var(--accent);
+        }
+
+        .kpi-icon.mem {
+            background: rgba(167,139,250,.1);
+            color: var(--purple);
+        }
+
+        .kpi-icon.disk {
+            background: rgba(255,201,71,.1);
+            color: var(--yellow);
+        }
+
+    .kpi-val {
+        font-family: var(--mono);
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--tp);
+        line-height: 1;
+        margin-bottom: 12px;
+    }
+
+        .kpi-val sup {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--ts);
+            margin-left: 2px;
+        }
+
+    /* Gauge bar */
+    .gauge-track {
+        height: 4px;
+        background: var(--bg-surface);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .gauge-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: width .8s cubic-bezier(.4,0,.2,1);
+    }
+
+        .gauge-fill.cpu {
+            background: var(--accent);
+        }
+
+        .gauge-fill.mem {
+            background: var(--purple);
+        }
+
+        .gauge-fill.disk {
+            background: var(--yellow);
+        }
+
+        .gauge-fill.warn {
+            background: var(--red) !important;
+        }
+
+    .kpi-meta {
+        margin-top: 8px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--td);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* ── CHARTS ROW ── */
+    .charts-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .chart-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .chart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .chart-title {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--ts);
+    }
+
+    .legend-dots {
+        display: flex;
+        gap: 12px;
+    }
+
+    .leg-dot {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--ts);
+    }
+
+        .leg-dot span {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+    /* ── LOG TABLE ── */
+    .log-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .log-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .log-title {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--ts);
+    }
+
+    .live-badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--green);
+        background: rgba(0,229,160,.08);
+        border: 1px solid rgba(0,229,160,.2);
+        border-radius: 5px;
+        padding: 3px 8px;
+    }
+
+    .live-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--green);
+        animation: pulse 1.5s infinite;
+    }
+
+    @@keyframes pulse {
+        0%,100%
+
+    {
+        opacity: 1
+    }
+
+    50% {
+        opacity: .3
+    }
+
+    }
+
+    .log-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--mono);
+        font-size: 12px;
+    }
+
+        .log-table th {
+            padding: 10px 20px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--td);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-surface);
+        }
+
+        .log-table td {
+            padding: 11px 20px;
+            color: var(--ts);
+            border-bottom: 1px solid rgba(30,45,61,.5);
+        }
+
+        .log-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .log-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .log-table .val-cpu {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .log-table .val-mem {
+            color: var(--purple);
+            font-weight: 600;
+        }
+
+        .log-table .val-disk {
+            color: var(--yellow);
+            font-weight: 600;
+        }
+
+        .log-table .val-warn {
+            color: var(--red) !important;
+            font-weight: 600;
+        }
+
+    .tag {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .tag-ok {
+        background: rgba(0,229,160,.1);
+        color: var(--green);
+        border: 1px solid rgba(0,229,160,.2);
+    }
+
+    .tag-warn {
+        background: rgba(255,201,71,.1);
+        color: var(--yellow);
+        border: 1px solid rgba(255,201,71,.2);
+    }
+
+    .tag-crit {
+        background: rgba(255,77,106,.1);
+        color: var(--red);
+        border: 1px solid rgba(255,77,106,.2);
+    }
+
+    /* Error state */
+    .api-error {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,77,106,.08);
+        border: 1px solid rgba(255,77,106,.2);
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--red);
+        margin-bottom: 16px;
+    }
+
+        .api-error svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+    @@media (max-width: 768px) {
+        .kpi-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .charts-row {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>
+
+<div class="api-error" id="apiError">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <span id="apiErrorMsg">API bağlantısı kurulamıyor — localhost:5099</span>
 </div>
+
+<div class="dash-header">
+    <div>
+        <div class="dash-title">System <span>Overview</span></div>
+    </div>
+    <div class="machine-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8M12 17v4" />
+        </svg>
+        <strong id="machine">—</strong>
+    </div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid">
+    <div class="kpi-card cpu">
+        <div class="kpi-top">
+            <div class="kpi-label">CPU Usage</div>
+            <div class="kpi-icon cpu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                    <rect x="9" y="9" width="6" height="6" />
+                    <path d="M15 2v2M9 2v2M15 20v2M9 20v2M2 15h2M2 9h2M20 15h2M20 9h2" />
+                </svg>
+            </div>
+        </div>
+        <div class="kpi-val" id="cpuVal">—<sup>%</sup></div>
+        <div class="gauge-track"><div class="gauge-fill cpu" id="cpuBar" style="width:0%"></div></div>
+        <div class="kpi-meta">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>
+            <span id="cpuStatus">Waiting for data…</span>
+        </div>
+    </div>
+
+    <div class="kpi-card mem">
+        <div class="kpi-top">
+            <div class="kpi-label">Memory</div>
+            <div class="kpi-icon mem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 19v-3M10 19v-3M14 19v-3M18 19v-3M2 9h20M2 15h20" />
+                    <rect x="2" y="5" width="20" height="14" rx="2" />
+                </svg>
+            </div>
+        </div>
+        <div class="kpi-val" id="memVal">—<sup>%</sup></div>
+        <div class="gauge-track"><div class="gauge-fill mem" id="memBar" style="width:0%"></div></div>
+        <div class="kpi-meta">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6" /></svg>
+            <span id="memStatus">Waiting for data…</span>
+        </div>
+    </div>
+
+    <div class="kpi-card disk">
+        <div class="kpi-top">
+            <div class="kpi-label">Disk Usage</div>
+            <div class="kpi-icon disk">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3" />
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                </svg>
+            </div>
+        </div>
+        <div class="kpi-val" id="diskVal">—<sup>%</sup></div>
+        <div class="gauge-track"><div class="gauge-fill disk" id="diskBar" style="width:0%"></div></div>
+        <div class="kpi-meta">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+            <span id="diskStatus">Waiting for data…</span>
+        </div>
+    </div>
+</div>
+
+<!-- CHARTS -->
+<div class="charts-row">
+    <div class="chart-card">
+        <div class="chart-header">
+            <div class="chart-title">Resource History — last 20 polls</div>
+            <div class="legend-dots">
+                <div class="leg-dot"><span style="background:#00d4ff"></span>CPU</div>
+                <div class="leg-dot"><span style="background:#a78bfa"></span>Memory</div>
+                <div class="leg-dot"><span style="background:#ffc947"></span>Disk</div>
+            </div>
+        </div>
+        <div style="position:relative;height:180px;">
+            <canvas id="historyChart" role="img" aria-label="Line chart showing CPU, Memory and Disk usage over last 20 polling intervals">Resource history data.</canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <div class="chart-title">Current Load</div>
+        </div>
+        <div style="position:relative;height:180px;">
+            <canvas id="donutChart" role="img" aria-label="Donut chart showing current CPU, Memory and Disk percentages">Current resource usage donut chart.</canvas>
+        </div>
+    </div>
+</div>
+
+<!-- LOG TABLE -->
+<div class="log-card">
+    <div class="log-header">
+        <div class="log-title">Recent Snapshots</div>
+        <div class="live-badge"><div class="live-dot"></div> Live · 5s</div>
+    </div>
+    <table class="log-table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Machine</th>
+                <th>CPU</th>
+                <th>Memory</th>
+                <th>Disk</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="logBody">
+            <tr><td colspan="6" style="text-align:center;color:var(--td);padding:20px;">Waiting for data…</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+    const API = "http://localhost:5099/api/metrics/last";
+    const MAX_HIST = 20;
+    const MAX_ROWS = 8;
+
+    let histLabels = [];
+    let cpuHist = [], memHist = [], diskHist = [];
+    let snapshots = [];
+    let histChart, donutChart;
+
+    function statusTag(val) {
+        if (val >= 90) return '<span class="tag tag-crit">Critical</span>';
+        if (val >= 70) return '<span class="tag tag-warn">Warning</span>';
+        return '<span class="tag tag-ok">OK</span>';
+    }
+
+    function overallStatus(cpu, mem, disk) {
+        const max = Math.max(cpu, mem, disk);
+        return statusTag(max);
+    }
+
+    function valClass(metric, val) {
+        const base = `val-${metric}`;
+        return val >= 90 ? 'val-warn' : base;
+    }
+
+    function updateCards(d) {
+        const cpu = parseFloat(d.cpuUsage).toFixed(1);
+        const mem = parseFloat(d.memoryUsage).toFixed(1);
+        const disk = parseFloat(d.diskUsage).toFixed(1);
+
+        document.getElementById('machine').textContent = d.machineName || '—';
+
+        document.getElementById('cpuVal').innerHTML  = `${cpu}<sup>%</sup>`;
+        document.getElementById('memVal').innerHTML  = `${mem}<sup>%</sup>`;
+        document.getElementById('diskVal').innerHTML = `${disk}<sup>%</sup>`;
+
+        setBar('cpuBar',  'cpu',  cpu);
+        setBar('memBar',  'mem',  mem);
+        setBar('diskBar', 'disk', disk);
+
+        document.getElementById('cpuStatus').textContent  = cpu  >= 90 ? 'Critical load!' : cpu  >= 70 ? 'High load' : 'Normal';
+        document.getElementById('memStatus').textContent  = mem  >= 90 ? 'Critical usage!' : mem  >= 70 ? 'High usage' : 'Normal';
+        document.getElementById('diskStatus').textContent = disk >= 90 ? 'Disk nearly full!' : disk >= 70 ? 'Getting full' : 'Healthy';
+    }
+
+    function setBar(id, cls, val) {
+        const el = document.getElementById(id);
+        el.style.width = Math.min(val, 100) + '%';
+        if (val >= 90) {
+            el.classList.add('warn');
+        } else {
+            el.classList.remove('warn');
+        }
+    }
+
+    function updateHistory(d) {
+        const now = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        histLabels.push(now);
+        cpuHist.push(parseFloat(d.cpuUsage).toFixed(1));
+        memHist.push(parseFloat(d.memoryUsage).toFixed(1));
+        diskHist.push(parseFloat(d.diskUsage).toFixed(1));
+
+        if (histLabels.length > MAX_HIST) {
+            histLabels.shift(); cpuHist.shift(); memHist.shift(); diskHist.shift();
+        }
+
+        histChart.data.labels = histLabels;
+        histChart.data.datasets[0].data = cpuHist;
+        histChart.data.datasets[1].data = memHist;
+        histChart.data.datasets[2].data = diskHist;
+        histChart.update('none');
+
+        donutChart.data.datasets[0].data = [
+            parseFloat(d.cpuUsage).toFixed(1),
+            parseFloat(d.memoryUsage).toFixed(1),
+            parseFloat(d.diskUsage).toFixed(1)
+        ];
+        donutChart.update('none');
+    }
+
+    function updateLog(d) {
+        const now = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const cpu = parseFloat(d.cpuUsage).toFixed(1);
+        const mem = parseFloat(d.memoryUsage).toFixed(1);
+        const disk = parseFloat(d.diskUsage).toFixed(1);
+
+        snapshots.unshift({ time: now, machine: d.machineName, cpu, mem, disk });
+        if (snapshots.length > MAX_ROWS) snapshots.pop();
+
+        const rows = snapshots.map(s => `
+            <tr>
+                <td>${s.time}</td>
+                <td style="color:var(--tp)">${s.machine}</td>
+                <td class="${valClass('cpu', s.cpu)}">${s.cpu}%</td>
+                <td class="${valClass('mem', s.mem)}">${s.mem}%</td>
+                <td class="${valClass('disk', s.disk)}">${s.disk}%</td>
+                <td>${overallStatus(s.cpu, s.mem, s.disk)}</td>
+            </tr>
+        `).join('');
+
+        document.getElementById('logBody').innerHTML = rows;
+    }
+
+    function loadData() {
+        fetch(API)
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(data => {
+                document.getElementById('apiError').style.display = 'none';
+                updateCards(data);
+                updateHistory(data);
+                updateLog(data);
+            })
+            .catch(err => {
+                const el = document.getElementById('apiError');
+                el.style.display = 'flex';
+                document.getElementById('apiErrorMsg').textContent = `API bağlantısı kurulamıyor — ${API}`;
+            });
+    }
+
+    function initCharts() {
+        const gridColor = 'rgba(30,45,61,0.8)';
+        const tickColor = '#3d5268';
+
+        histChart = new Chart(document.getElementById('historyChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    { label: 'CPU', data: [], borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.06)', borderWidth: 1.5, pointRadius: 2, pointHoverRadius: 4, tension: 0.4, fill: true },
+                    { label: 'Memory', data: [], borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.06)', borderWidth: 1.5, pointRadius: 2, pointHoverRadius: 4, tension: 0.4, fill: true },
+                    { label: 'Disk', data: [], borderColor: '#ffc947', backgroundColor: 'rgba(255,201,71,0.06)', borderWidth: 1.5, pointRadius: 2, pointHoverRadius: 4, tension: 0.4, fill: true },
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { family: "'JetBrains Mono'", size: 9 }, maxTicksLimit: 6, maxRotation: 0 }, grid: { color: gridColor } },
+                    y: { min: 0, max: 100, ticks: { color: tickColor, font: { family: "'JetBrains Mono'", size: 9 }, callback: v => v + '%' }, grid: { color: gridColor } }
+                }
+            }
+        });
+
+        donutChart = new Chart(document.getElementById('donutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['CPU', 'Memory', 'Disk'],
+                datasets: [{
+                    data: [0, 0, 0],
+                    backgroundColor: ['rgba(0,212,255,0.8)', 'rgba(167,139,250,0.8)', 'rgba(255,201,71,0.8)'],
+                    borderColor: '#111820',
+                    borderWidth: 3,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: { color: '#7a93ab', font: { family: "'JetBrains Mono'", size: 10 }, padding: 12, boxWidth: 10, boxHeight: 10 }
+                    }
+                }
+            }
+        });
+    }
+
+    initCharts();
+    loadData();
+    setInterval(loadData, 5000);
+</script>

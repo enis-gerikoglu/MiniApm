@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MiniApm.Consumer
-build_property.ProjectDir = /Users/enis/RiderProjects/MiniApm/MiniApm.Consumer/
+build_property.ProjectDir = C:\Users\pc\Source\Repos\MiniApm\MiniApm.Consumer\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

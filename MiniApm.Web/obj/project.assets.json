@@ -3237,32 +3237,39 @@
     ]
   },
   "packageFolders": {
-    "/Users/enis/.nuget/packages/": {}
+    "C:\\Users\\pc\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/enis/RiderProjects/MiniApm/MiniApm.Web/MiniApm.Web.csproj",
+      "projectUniqueName": "C:\\Users\\pc\\Source\\Repos\\MiniApm\\MiniApm.Web\\MiniApm.Web.csproj",
       "projectName": "MiniApm.Web",
-      "projectPath": "/Users/enis/RiderProjects/MiniApm/MiniApm.Web/MiniApm.Web.csproj",
-      "packagesPath": "/Users/enis/.nuget/packages/",
-      "outputPath": "/Users/enis/RiderProjects/MiniApm/MiniApm.Web/obj/",
+      "projectPath": "C:\\Users\\pc\\Source\\Repos\\MiniApm\\MiniApm.Web\\MiniApm.Web.csproj",
+      "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\pc\\Source\\Repos\\MiniApm\\MiniApm.Web\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/Users/enis/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/enis/RiderProjects/MiniApm/MiniApm.Api/MiniApm.Api.csproj": {
-              "projectPath": "/Users/enis/RiderProjects/MiniApm/MiniApm.Api/MiniApm.Api.csproj"
+            "C:\\Users\\pc\\Source\\Repos\\MiniApm\\MiniApm.Api\\MiniApm.Api.csproj": {
+              "projectPath": "C:\\Users\\pc\\Source\\Repos\\MiniApm\\MiniApm.Api\\MiniApm.Api.csproj"
             }
           }
         }
@@ -3276,7 +3283,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -3300,7 +3308,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.411/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
